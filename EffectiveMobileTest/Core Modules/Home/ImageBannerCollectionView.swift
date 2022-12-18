@@ -15,7 +15,7 @@ protocol ImageBannerCollectionViewProtocol: AnyObject {
 final class ImageBannerCollectionView: UIView {
     
     public weak var delegate: ImageBannerCollectionViewProtocol?
-    private var imageBannerSelectedCell: Int? = nil
+    private var imageBannerSelectedCell = 0
         
     // MARK: - Subviews
     
@@ -101,16 +101,15 @@ extension ImageBannerCollectionView: UICollectionViewDataSource, UICollectionVie
         ) as? ImageBannerCollectionViewCell else {
             return UICollectionViewCell()
         }
-        if let selectedCell = imageBannerSelectedCell, selectedCell == indexPath.row {
+        if imageBannerSelectedCell == indexPath.row {
             cell.isSelected = true
         }
         cell.imageUrl = delegate?.imageBannerRequest(for: indexPath)
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        collectionView.deselectItem(at: indexPath, animated: true)
-        imageBannerSelectedCell = indexPath.row
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        imageBannerSelectedCell = Int((scrollView.contentOffset.x + C.imageBannerCellWidth / 2) / C.imageBannerCellWidth)
         collectionView.reloadData()
     }
 }
@@ -121,13 +120,22 @@ private extension ImageBannerCollectionView {
     typealias C = Constants
     
     enum Constants {
-        static let itemLeftInset: CGFloat = 70
-        static let itemRightInset: CGFloat = 70
-        static let imageBannerCellWidth: CGFloat = 266
-        static var imageBannerCellHeight: CGFloat {
-            R.Screen.size.height / 3
-        } //335
         static let cellItemSpace: CGFloat = 30
+        static var itemLeftInset: CGFloat {
+            (R.Screen.size.width - imageBannerCellWidth) / 2
+        }
+        
+        static var itemRightInset: CGFloat {
+            (R.Screen.size.width - imageBannerCellWidth) / 2
+        }
+        
+        static var imageBannerCellWidth: CGFloat {
+            R.Screen.size.width / 2
+        }
+        
+        static var imageBannerCellHeight: CGFloat {
+            R.Screen.size.height / 3.5
+        }
     }
 }
 

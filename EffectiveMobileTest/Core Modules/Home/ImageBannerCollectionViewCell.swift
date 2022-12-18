@@ -53,8 +53,25 @@ private extension ImageBannerCollectionViewCell {
     }
     
     func configureUI() {
+        animateCell()
         ImageLoaderService.shared.loadImage(for: imageUrl) { [weak self] image in
             self?.bannerImageView.image = image
+        }
+    }
+}
+
+// MARK: - Animation
+
+private extension ImageBannerCollectionViewCell {
+    func animateCell() {
+        if !isSelected {
+            UIView.animate(withDuration: C.animationDuration) {
+                self.transform = CGAffineTransform(scaleX: C.cellMinScale, y: C.cellMinScale)
+            }
+        } else {
+            UIView.animate(withDuration: C.animationDuration) {
+                self.transform = CGAffineTransform(scaleX: C.cellMaxScale, y: C.cellMaxScale)
+            }
         }
     }
 }
@@ -66,6 +83,9 @@ private extension ImageBannerCollectionViewCell {
     
     enum Constants {
         static let imageBannerCellCornerRadius: CGFloat = 20
+        static let animationDuration: CGFloat = 0.3
+        static let cellMaxScale: CGFloat = 1
+        static let cellMinScale: CGFloat = 0.9
     }
 }
 
