@@ -116,7 +116,7 @@ extension HomeStorePresenter {
 extension HomeStorePresenter {
     func toggleFilterOptionsAppearance() {
         NotificationCenter.default.post(
-            name: NSNotification.Name(R.Text.NotificationKey.tabBar),
+            name: NSNotification.Name(R.Text.NotificationKey.tabBarAppearance),
             object: nil
         )
         
@@ -136,7 +136,7 @@ extension HomeStorePresenter {
     }
 }
 
-// MARK: - Data
+// MARK: - Private
 
 private extension HomeStorePresenter {
     func fetchCategoryData() {

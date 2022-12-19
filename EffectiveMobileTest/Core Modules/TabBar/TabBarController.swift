@@ -19,7 +19,7 @@ final class TabBarController: UITabBarController {
         super.viewDidLoad()
         setup()
         setupLayout()
-        addObserver()
+        addObservers()
     }
 }
 
@@ -31,21 +31,28 @@ private extension TabBarController {
         
         let controllers = [
             Assembly.configureHomeStoreModule(),
-            Assembly.configureBasketModule(),
+            Assembly.configureCartModule(),
             Assembly.configureFavoritesModule(),
             Assembly.configureProfileModule()
         ]
         
-        selectedIndex = 0
+        selectFirstTab()
         tabBar.isHidden = true
         setViewControllers(controllers, animated: true)
     }
     
-    func addObserver() {
+    func addObservers() {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(toggleTabBarAppearance),
-            name: NSNotification.Name(R.Text.NotificationKey.tabBar),
+            name: NSNotification.Name(R.Text.NotificationKey.tabBarAppearance),
+            object: nil
+        )
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(selectFirstTab),
+            name: NSNotification.Name(R.Text.NotificationKey.tabBarGoHome),
             object: nil
         )
     }
@@ -56,6 +63,13 @@ private extension TabBarController {
 extension TabBarController {
     @objc func toggleTabBarAppearance() {
         tabBarView.isHidden = !tabBarView.isHidden
+    }
+    
+    @objc func selectFirstTab() {
+        if selectedIndex != 0 {
+            tabBarView.didTapItem(with: 0)
+        }
+        selectedIndex = 0
     }
 }
 

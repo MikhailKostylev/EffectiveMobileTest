@@ -18,9 +18,19 @@ final class ImageBannerCollectionViewCell: UICollectionViewCell {
         
     // MARK: - Subviews
     
+    private let spinner: UIActivityIndicatorView = {
+        let view = UIActivityIndicatorView(style: .large)
+        view.hidesWhenStopped = true
+        view.tintColor = .black
+        view.startAnimating()
+        return view
+    }()
+    
     private lazy var bannerImageView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFill
+        view.layer.cornerRadius = C.imageBannerCellCornerRadius
+        view.layer.masksToBounds = true
         return view
     }()
     
@@ -42,20 +52,22 @@ final class ImageBannerCollectionViewCell: UICollectionViewCell {
 
 private extension ImageBannerCollectionViewCell {
     func setup() {
-        contentView.backgroundColor = R.Color.imageBannerCellBackground
-        contentView.layer.cornerRadius = C.imageBannerCellCornerRadius
-        contentView.layer.masksToBounds = true
-        contentView.clipsToBounds = true
+        contentView.layer.shadowOffset = CGSize(width: .zero, height: C.shadowOffsetHeight)
+        contentView.layer.shadowColor = R.Color.imageBannerCellShadowRadius.cgColor
+        contentView.layer.shadowRadius = C.imageBannerCellShadowRadius
+        contentView.layer.shadowOpacity = 1
     }
     
     func addSubviews() {
         contentView.addSubview(bannerImageView)
+        contentView.addSubview(spinner)
     }
     
     func configureUI() {
         animateCell()
         ImageLoaderService.shared.loadImage(for: imageUrl) { [weak self] image in
             self?.bannerImageView.image = image
+            self?.spinner.stopAnimating()
         }
     }
 }
@@ -83,6 +95,8 @@ private extension ImageBannerCollectionViewCell {
     
     enum Constants {
         static let imageBannerCellCornerRadius: CGFloat = 20
+        static let imageBannerCellShadowRadius: CGFloat = 20
+        static let shadowOffsetHeight: CGFloat = 10
         static let animationDuration: CGFloat = 0.3
         static let cellMaxScale: CGFloat = 1
         static let cellMinScale: CGFloat = 0.9
@@ -93,9 +107,13 @@ private extension ImageBannerCollectionViewCell {
 
 private extension ImageBannerCollectionViewCell {
     func setupLayout() {
+        spinner.prepareForAutoLayout()
         bannerImageView.prepareForAutoLayout()
         
         let constraints = [
+            spinner.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            spinner.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            
             bannerImageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             bannerImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             bannerImageView.widthAnchor.constraint(equalTo: contentView.widthAnchor),

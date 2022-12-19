@@ -24,7 +24,7 @@ final class ProductDetailsVC: UIViewController {
     // MARK: - Subviews
     
     private let statusBarView = UIView()
-    private let navBarView = NavBarView()
+    private let navBarView = DetailsNavBarView()
     private let imageBannerCollectionView = ImageBannerCollectionView()
     private let detailsView = DetailsView()
     
@@ -103,13 +103,14 @@ extension ProductDetailsVC: ProductDetailsVCProtocol {
 
 // MARK: - Nav Bar Delegate
 
-extension ProductDetailsVC: NavBarViewProtocol {
+extension ProductDetailsVC: DetailsNavBarViewProtocol {
     func didTapBack() {
         navigationController?.popViewController(animated: true)
     }
     
     func didTapBasket() {
-        print(#function)
+        let cartVC = Assembly.configureCartModule()
+        navigationController?.pushViewController(cartVC, animated: true)
     }
 }
 
@@ -157,8 +158,6 @@ private extension ProductDetailsVC {
     enum Constants {
         static let navBarTop: CGFloat = 35
         static let navBarHeight: CGFloat = 37
-        static let imageBannerTop: CGFloat = 14
-        static let imageBannerBottom: CGFloat = -14
         static let detailsViewHeight: CGFloat = 449
     }
 }
@@ -185,10 +184,10 @@ private extension ProductDetailsVC {
             navBarView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             navBarView.heightAnchor.constraint(equalToConstant: C.navBarHeight),
             
-            imageBannerCollectionView.topAnchor.constraint(equalTo: navBarView.bottomAnchor, constant: C.imageBannerTop),
+            imageBannerCollectionView.topAnchor.constraint(equalTo: navBarView.bottomAnchor),
             imageBannerCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             imageBannerCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            imageBannerCollectionView.bottomAnchor.constraint(equalTo: detailsView.topAnchor, constant: C.imageBannerBottom),
+            imageBannerCollectionView.bottomAnchor.constraint(equalTo: detailsView.topAnchor),
             
             detailsView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             detailsView.trailingAnchor.constraint(equalTo: view.trailingAnchor),

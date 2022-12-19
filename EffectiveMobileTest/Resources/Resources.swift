@@ -32,7 +32,11 @@ enum Resources {
         static let filtersViewShadow = UIColor(named: "filtersViewShadow")!
         static let bestSellerShadow = UIColor(named: "bestSellerShadow")!
         static let favoriteShadow = UIColor(named: "favoriteShadow")!
-        static let imageBannerCellBackground = UIColor(named: "imageBannerCellBackground")!
+        static let imageBannerCellShadowRadius = UIColor(named: "imageBannerCellShadowRadius")!
+        static let bigDivider = UIColor(named: "bigDivider")!
+        static let divider = UIColor(named: "divider")!
+        static let cartTableViewShadow = UIColor(named: "cartTableViewShadow")!
+        static let cartCellBackground = UIColor(named: "cartCellBackground")!
     }
     
     // MARK: - Image
@@ -76,6 +80,9 @@ enum Resources {
             static let like = UIImage(systemName: "heart")!
             static let likeFill = UIImage(systemName: "heart.fill")!
             static let check = UIImage(named: "check")!
+            
+            static let locationPin = UIImage(named: "locationPin")!
+            static let trash = UIImage(named: "trash")!
         }
     }
     
@@ -110,6 +117,14 @@ enum Resources {
             static let details = "Details"
             static let features = "Features"
             static let selection = "Select color and capacity"
+            
+            static let addAddress = "Add address"
+            static let myCart = "My Cart"
+            static let total = "Total"
+            static let delivery = "Delivery"
+            static let checkout = "Checkout"
+            static let minus = "-"
+            static let plus = "+"
         }
         
         enum Basket {
@@ -127,13 +142,16 @@ enum Resources {
         }
         
         enum Url {
-            static let profile = "https://github.com/MikhailKostylev"
             static let homeStoreProducts = "https://run.mocky.io/v3/654bd15e-b121-49ba-a588-960956b15175"
             static let productDetails = "https://run.mocky.io/v3/6c14c560-15c6-4248-b9d2-b4508df7d4f5"
+            static let cart = "https://run.mocky.io/v3/53539a72-3c5f-4f30-bbb1-6ca10d42c149"
+            static let profile = "https://github.com/MikhailKostylev"
         }
         
         enum NotificationKey {
-            static let tabBar = "tabBar"
+            static let tabBarAppearance = "tabBarAppearance"
+            static let tabBarGoHome = "tabBarGoHome"
+            static let tabBarCounter = "tabBarCounter"
         }
     }
     

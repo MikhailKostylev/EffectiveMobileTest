@@ -58,9 +58,14 @@ private extension ImageBannerCollectionView {
     func setupFlowLayout() -> UICollectionViewFlowLayout {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.itemSize = CGSize(width: C.imageBannerCellWidth, height: C.imageBannerCellHeight)
-        layout.sectionInset = UIEdgeInsets(top: .zero, left: C.itemLeftInset, bottom: .zero, right: C.itemRightInset)
         layout.minimumLineSpacing = C.cellItemSpace
+        layout.itemSize = CGSize(width: C.imageBannerCellWidth, height: C.imageBannerCellHeight)
+        layout.sectionInset = UIEdgeInsets(
+            top: C.itemTopInset,
+            left: C.itemLeftInset,
+            bottom: C.itemBottomInset,
+            right: C.itemRightInset
+        )
         return layout
     }
     
@@ -121,6 +126,8 @@ private extension ImageBannerCollectionView {
     
     enum Constants {
         static let cellItemSpace: CGFloat = 30
+        static let itemTopInset: CGFloat = 14
+        static let itemBottomInset: CGFloat = 14
         static var itemLeftInset: CGFloat {
             (R.Screen.size.width - imageBannerCellWidth) / 2
         }
@@ -130,7 +137,7 @@ private extension ImageBannerCollectionView {
         }
         
         static var imageBannerCellWidth: CGFloat {
-            R.Screen.size.width / 2
+            R.Screen.size.width / 1.56
         }
         
         static var imageBannerCellHeight: CGFloat {

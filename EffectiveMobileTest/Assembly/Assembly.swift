@@ -9,7 +9,7 @@ import UIKit
 
 final class Assembly {
 
-    // MARK: - Home
+    // MARK: - Home Store
     
     static func configureHomeStoreModule() -> UIViewController {
         let view = HomeStoreVC()
@@ -28,26 +28,34 @@ final class Assembly {
         return UINavigationController(rootViewController: view)
     }
     
+    // MARK: - Product Details
+    
     static func configureProductDetailsModule(itemID: Int) -> UIViewController {
         let view = ProductDetailsVC()
-        let dataService = DataService()
         let networkService = NetworkService()
         
         let presenter = ProductDetailsPresenter(
             view: view,
-            itemID: itemID,
-            dataService: dataService,
-            networkService: networkService
+            networkService: networkService,
+            itemID: itemID
         )
 
         view.presenter = presenter
         return view
     }
     
-    // MARK: - Basket
+    // MARK: - Cart
     
-    static func configureBasketModule() -> UIViewController {
-        let view = BasketVC()
+    static func configureCartModule() -> UIViewController {
+        let view = CartVC()
+        let networkService = NetworkService()
+        
+        let presenter = CartPresenter(
+            view: view,
+            networkService: networkService
+        )
+
+        view.presenter = presenter
         return view
     }
     

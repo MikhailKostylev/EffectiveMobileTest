@@ -21,9 +21,21 @@ final class TabItemView: UIStackView {
         return view
     }()
     
+    private let cartCounterLabel: UILabel = {
+        let view = UILabel()
+        view.textAlignment = .center
+        view.backgroundColor = R.Color.peach
+        view.font = R.Font.markPro(type: .bold, size: C.cartCounterFontSize)
+        view.textColor = R.Color.night
+        view.layer.cornerRadius = C.cartCounterCornerRadius
+        view.layer.masksToBounds = true
+        view.isHidden = true
+        return view
+    }()
+    
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = R.Font.markPro(type: .bold, size: Constants.titleLabelSize)
+        label.font = R.Font.markPro(type: .bold, size: C.titleLabelSize)
         label.textColor = .white
         label.textAlignment = .left
         label.isHidden = true
@@ -42,6 +54,11 @@ final class TabItemView: UIStackView {
     }
     
     private let item: TabItemModel?
+    private var cartCounter: Int? {
+        didSet {
+            updateCartCounter()
+        }
+    }
     
     // MARK: - Init
     
@@ -55,6 +72,7 @@ final class TabItemView: UIStackView {
         setupLayout()
         configureContent()
         addTapGesture()
+        addObserver()
     }
     
     required init(coder: NSCoder) {
@@ -66,23 +84,9 @@ final class TabItemView: UIStackView {
     // MARK: - Increase Tap Area
     
     override func point(inside point: CGPoint, with _: UIEvent?) -> Bool {
-        let margin: CGFloat = Constants.tapableArea
+        let margin: CGFloat = C.tapableArea
         let area = self.bounds.insetBy(dx: -margin, dy: -margin)
         return area.contains(point)
-    }
-}
-
-// MARK: - Constants
-
-private extension TabItemView {
-    enum Constants {
-        static let tapableArea: CGFloat = 20
-        static let titleLabelSize: CGFloat = 15
-        static let iconLabelSpacing: CGFloat = 7
-        static let tabBarHeight: CGFloat = 72
-        static let animationDuration: Double = 0.4
-        static let animationDamping: Double = 0.9
-        static let animationScale: Double = 0.5
     }
 }
 
@@ -92,25 +96,41 @@ private extension TabItemView {
     func setupHierarchy() {
         addArrangedSubview(iconImageView)
         addArrangedSubview(titleLabel)
+        iconImageView.addSubview(cartCounterLabel)
     }
     
     func setupTabItemView() {
         axis = .horizontal
         alignment = .center
         distribution = .fillProportionally
-        spacing = Constants.iconLabelSpacing
-    }
-    
-    func setupLayout() {
-        let constraints = [
-            iconImageView.heightAnchor.constraint(equalToConstant: Constants.tabBarHeight)
-        ]
-        NSLayoutConstraint.activate(constraints)
+        spacing = C.iconLabelSpacing
     }
     
     func configureContent() {
         iconImageView.image = isSelected ? item?.selectedIcon : item?.icon
         titleLabel.text = isSelected ? item?.selectedName : nil
+    }
+    
+    func updateCartCounter() {
+        if index == 1 {
+            cartCounterLabel.isHidden = (cartCounter == 0 || cartCounter == nil)
+            if let counter = cartCounter {
+                cartCounterLabel.text = String(counter)
+            }
+        }
+    }
+}
+
+// MARK: - Observer
+
+private extension TabItemView {
+    func addObserver() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(setCartCounter(_:)),
+            name: NSNotification.Name(R.Text.NotificationKey.tabBarCounter),
+            object: nil
+        )
     }
 }
 
@@ -126,11 +146,17 @@ private extension TabItemView {
     }
 }
 
-// MARK: - Interaction
+// MARK: - Actions
 
 private extension TabItemView {
     @objc func didTapItem() {
         delegate?.didTapItem(with: index)
+    }
+    
+    @objc func setCartCounter(_ notification: NSNotification) {
+        if let counter = notification.userInfo?[R.Text.NotificationKey.tabBarCounter] as? Int {
+            cartCounter = counter
+        }
     }
 }
 
@@ -139,9 +165,9 @@ private extension TabItemView {
 private extension TabItemView {
     func animateItems() {
         if isSelected {
-            let timeInterval: TimeInterval = Constants.animationDuration
-            let propertyAnimator = UIViewPropertyAnimator(duration: timeInterval, dampingRatio: Constants.animationDamping) {
-                self.transform = CGAffineTransform.identity.scaledBy(x: Constants.animationScale, y: Constants.animationScale)
+            let timeInterval: TimeInterval = C.animationDuration
+            let propertyAnimator = UIViewPropertyAnimator(duration: timeInterval, dampingRatio: C.animationDamping) {
+                self.transform = CGAffineTransform.identity.scaledBy(x: C.animationScale, y: C.animationScale)
             }
             propertyAnimator.addAnimations({ self.transform = .identity }, delayFactor: CGFloat(timeInterval))
             propertyAnimator.startAnimation()
@@ -149,7 +175,7 @@ private extension TabItemView {
         
         UIView.transition(
             with: iconImageView,
-            duration: Constants.animationDuration,
+            duration: C.animationDuration,
             options: .transitionCrossDissolve
         ) {
             self.configureContent()
@@ -157,3 +183,43 @@ private extension TabItemView {
     }
 }
 
+// MARK: - Constants
+
+private extension TabItemView {
+    typealias C = Constants
+    
+    enum Constants {
+        static let tapableArea: CGFloat = 20
+        static let titleLabelSize: CGFloat = 15
+        static let iconLabelSpacing: CGFloat = 7
+        static let tabBarHeight: CGFloat = 72
+        static let animationDuration: Double = 0.4
+        static let animationDamping: Double = 0.9
+        static let animationScale: Double = 0.5
+        static let cartCounterFontSize: CGFloat = 14
+        static let cartCounterSize: CGFloat = 20
+        static let cartCounterX: CGFloat = 12
+        static let cartCounterY: CGFloat = -12
+        static var cartCounterCornerRadius: CGFloat {
+            cartCounterSize / 2
+        }
+    }
+}
+
+// MARK: - Layout
+
+private extension TabItemView {
+    func setupLayout() {
+        cartCounterLabel.prepareForAutoLayout()
+        
+        let constraints = [
+            iconImageView.heightAnchor.constraint(equalToConstant: C.tabBarHeight),
+            
+            cartCounterLabel.centerXAnchor.constraint(equalTo: iconImageView.centerXAnchor, constant: C.cartCounterX),
+            cartCounterLabel.centerYAnchor.constraint(equalTo: iconImageView.centerYAnchor, constant: C.cartCounterY),
+            cartCounterLabel.widthAnchor.constraint(equalToConstant: C.cartCounterSize),
+            cartCounterLabel.heightAnchor.constraint(equalToConstant: C.cartCounterSize)
+        ]
+        NSLayoutConstraint.activate(constraints)
+    }
+}

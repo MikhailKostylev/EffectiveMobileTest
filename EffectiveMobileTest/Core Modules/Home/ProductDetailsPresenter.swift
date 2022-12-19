@@ -22,9 +22,8 @@ final class ProductDetailsPresenter: ProductDetailsPresenterProtocol {
     // MARK: - Properties
     
     public unowned var view: ProductDetailsVCProtocol!
-    private var itemID: Int
-    private var dataService: DataServiceProtocol
     private var networkService: NetworkServiceProtocol
+    private var itemID: Int
     private var viewModel: ProductDetailsModel?
     private var images = [String]()
     private var colors = [String]()
@@ -34,14 +33,12 @@ final class ProductDetailsPresenter: ProductDetailsPresenterProtocol {
     
     init(
         view: ProductDetailsVCProtocol,
-        itemID: Int,
-        dataService: DataServiceProtocol,
-        networkService: NetworkServiceProtocol
+        networkService: NetworkServiceProtocol,
+        itemID: Int
     ) {
         self.view = view
-        self.itemID = itemID
-        self.dataService = dataService
         self.networkService = networkService
+        self.itemID = itemID
         start()
     }
     
@@ -93,13 +90,13 @@ extension ProductDetailsPresenter {
 extension ProductDetailsPresenter {
     func toggleTabBarAppearance() {
         NotificationCenter.default.post(
-            name: NSNotification.Name(R.Text.NotificationKey.tabBar),
+            name: NSNotification.Name(R.Text.NotificationKey.tabBarAppearance),
             object: nil
         )
     }
 }
 
-// MARK: - Data
+// MARK: - Private
 
 private extension ProductDetailsPresenter {
     func fetchData() {
