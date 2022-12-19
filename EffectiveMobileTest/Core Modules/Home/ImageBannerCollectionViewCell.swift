@@ -28,7 +28,7 @@ final class ImageBannerCollectionViewCell: UICollectionViewCell {
     
     private lazy var bannerImageView: UIImageView = {
         let view = UIImageView()
-        view.contentMode = .scaleAspectFill
+        view.contentMode = .scaleToFill
         view.layer.cornerRadius = C.imageBannerCellCornerRadius
         view.layer.masksToBounds = true
         return view

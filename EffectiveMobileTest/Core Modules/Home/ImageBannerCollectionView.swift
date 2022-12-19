@@ -141,7 +141,7 @@ private extension ImageBannerCollectionView {
         }
         
         static var imageBannerCellHeight: CGFloat {
-            R.Screen.size.height / 3.5
+            R.Screen.size.height / 3.2
         }
     }
 }
@@ -151,7 +151,7 @@ private extension ImageBannerCollectionView {
 private extension ImageBannerCollectionView {
     func setupLayout() {
         collectionView.prepareForAutoLayout()
-        
+
         let constraints = [
             collectionView.topAnchor.constraint(equalTo: topAnchor),
             collectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
